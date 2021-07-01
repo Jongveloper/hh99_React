@@ -2,18 +2,29 @@
 import React from "react";
 import styled from "styled-components";
 
+// redux hook을 불러옵니다.
+import {useDispatch, useSelector} from 'react-redux';
+
 const BucketList = (props) => {
-  console.log(props);
-  const my_lists = props.list;
+  // 버킷리스트를 리덕스 훅으로 가져오기
+  const bucket_list = useSelector(state => state.bucket.list);
+
+  console.log(bucket_list);
   
   return (
     <ListStyle>
-      {my_lists.map((list, index) => {
+      {bucket_list.map((list, index) => {
         return (
-          <ItemStyle className="list_item" key={index} onClick={() => {
-            props.history.push('/detail');
-            }}>
-            {list}
+          <ItemStyle
+            className="list_item"
+            key={index}
+            completed={list.completed}
+            onClick={() => {
+              // 배열의 몇번째 항목을 눌렀는 지, url 파라미터로 넘겨줍니다.
+              props.history.push("/detail/"+index);
+            }}
+          >
+            {list.text}
           </ItemStyle>
         );
       })}
@@ -24,7 +35,7 @@ const BucketList = (props) => {
 const ListStyle = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 50vh;
   overflow-x: hidden;
   overflow-y: auto;
 `;
@@ -32,7 +43,9 @@ const ListStyle = styled.div`
 const ItemStyle = styled.div`
   padding: 16px;
   margin: 8px;
-  background-color: aliceblue;
+  font-weight: 600;
+  color: ${(props) => (props.completed ? "white" : "black")};
+  background-color: ${(props) => (props.completed ? "#673ab7" : "aliceblue")};
 `;
 
 export default BucketList;
